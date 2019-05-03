@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="">
+
+<head>
+  <meta charset="utf-8">
+  <title>Blackhole</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="../css/_shared.css">
+  <!-- <link rel="stylesheet" href="../css/blackhole.css"> -->
+
+  <meta name="theme-color" content="#fafafa">
+</head>
+
+<body>
+  
+  <div class="wrapper">
+    <p>blackhole</p>
+    <br/>
+    <div id="p5canvas"></div>
+    <br/>
+    <div class="desc">
+        <div style="border-right: 1px solid gray">
+            <strong>about</strong>
+            <p>galaxy: M87</p>
+            <p>mass: 2.6 billion suns</p>
+            <p>schwarzschild radius (distance to event horizon) = r_s = (2 * g * m) / c ^ 2</p>
+            <p>accretion disk = 3 * r_s</p>
+        </div>
+        <div class="interact">
+            <strong>interact:</strong>
+            <p>click on the canvas or click one of these buttons</p> 
+            <br>
+            <div class="btn" id="btn"></div>
+            <br>
+            <div class="btn" id="btn2"></div>
+            <br>
+        </div>
+    </div>
+    <br/>
+    <a href="../projects.html">back to sketches</a>
+  </div>
+
+  <script src="../js/vendor/p5.min.js"></script>
+  <script src="../js/vendor/p5.dom.min.js"></script>
+  <script src="../js/blackhole/main.js"></script>
+  <script src="../js/blackhole/blackhole.js"></script>
+  <script src="../js/blackhole/photon.js"></script>
+
+</body>
+
+</html>
