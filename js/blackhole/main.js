@@ -55,13 +55,17 @@ function draw() {
     background(7, 7, 7, 20)
     
     // then draw the particles
-    for (let p of particles) {
+    for (let i = particles.length - 1; i >= 0; i--) {
+        let p = particles[i];
         // change the photons velocity to pull it towards the black hole
         m87.pull(p);
         // use the photons velocity to update it's position
         p.update();
         // paint the photon
         p.show();
+
+        // if the particles history is empty, remove it
+        if (p.history.length == 0) particles.splice(i, 1);
     }
 
     // last: draw the blackhole so nothing will be above it
@@ -75,6 +79,8 @@ function draw() {
 
     // if the loop box is checked, created new photons every 10 seconds
     if (loop && frameCount % 300 == 0) initialPhotons();
+
+    console.log(particles.length)
 }
 
 /*****************
