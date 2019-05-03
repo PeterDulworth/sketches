@@ -4,7 +4,7 @@ sketches made in p5js
 
 link: [http://peterdulworth.com/sketches/index.html](http://peterdulworth.com/sketches/index.html)
 
-![blackhole gif](https://github.com/PeterDulworth/sketches/blob/master/img/gifs/blackhole.gif)
+![blackhole gif](https://github.com/PeterDulworth/sketches/blob/master/img/blackhole.gif)
 
 current sketches include:
 
