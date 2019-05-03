@@ -4,6 +4,8 @@ sketches made in p5js
 
 link: [http://peterdulworth.com/sketches/index.html](http://peterdulworth.com/sketches/index.html)
 
+![blackhole gif](https://github.com/PeterDulworth/sketches/blob/master/img/gifs/blackhole.gif)
+
 current sketches include:
 
 - closed loop perlin noise [http://peterdulworth.com/sketches/projects/perlin.html](http://peterdulworth.com/sketches/projects/perlin.html)
