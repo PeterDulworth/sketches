@@ -4,6 +4,8 @@ const G = 3.54; // gravitational constant (made up)
 const dt = 0.1; // 
 const particles = [];
 let m87, start, end;
+let checkbox;
+let loop = false;
 
 function setup() {
     // create the canvas
@@ -17,15 +19,23 @@ function setup() {
 
     initialPhotons()
 
-    button = createButton('photons');
+    button = createButton('create photons');
     button.mousePressed(initialPhotons);
     button.parent('btn')
 
-    button2 = createButton('more photons');
+    button2 = createButton('create weird photons');
     button2.mousePressed(initialWobblyPhotons);
     button2.parent('btn2')
+
+    checkbox = createCheckbox(' check this box to loop', false);
+    checkbox.changed(checkToggled);
+    checkbox.parent('chk')
 }
 
+
+function checkToggled() {
+    loop = this.checked();
+}
 
 // create a photon wherever you click the mouse
 function mousePressed() {
@@ -62,6 +72,9 @@ function draw() {
     // strokeWeight(1)
     // line(0, height / 2, width, height / 2) // x1, y1, x2, y2
     // line(0, height / 2 - m87.rs * 2.6, width, height / 2 - m87.rs * 2.6)
+
+    // if the loop box is checked, created new photons every 10 seconds
+    if (loop && frameCount % 300 == 0) initialPhotons();
 }
 
 /*****************
