@@ -1,45 +1,25 @@
 let fr = 30; // default 30
-// let slider;
-let zOff = 0;
-let t = 0;
-let numLoops = 0;
 let history = [];
 let fade = 0.3; // fade speed (0 - 1)
-
+let zPerlin = 0; // this is what causes it to animate
 var scrollCount = 30.0;
-
-window.addEventListener("wheel", (e) => {
-    if(e.wheelDelta < 0 && scrollCount < 100) scrollCount += 1;
-    else if(e.wheelDelta>0 && scrollCount > 0) scrollCount -= 1;
-	document.querySelector('.number').innerHTML = scrollCount;
-});
 
 function setup() { 
     // create the canvas
     let myCanvas = createCanvas(windowWidth, 600);
     myCanvas.parent('p5canvas');
-    // set the frame rate
     frameRate(fr);
-    // create a slider
-    // slider = createSlider(0, 100, 5, 0.1); // min, max, val, step
-    // slider.parent('slider')
-    // background(0);
     background(28, 77, 93)
 } 
   
 function draw() { 
     // fade background by setting a small opacity each time
     background(28, 77, 93, map(fade, 0, 1, 0, 255));
-    translate(width / 2, height / 2)
-    stroke(255)
-    stroke(map(noise(t), 0, 1, 0, 20), map(noise(t), 0, 1, 200, 255), 255)
-    // stroke(64, 224, 208)
-    // stroke(255)
+    translate(width / 2, height / 2);
+    stroke(10, 255, 255)
     noFill();
-    noiseSeed(99); // start with the same shape everytime
+    // noiseSeed(99); // start with the same shape everytime
     
-    // beginShape();
-    // let noiseMax = slider.value();
     let noiseMax = map(scrollCount, 0, 100, 2, 20);
     // dictates the number of vertices 
     // note: this also dictates how fast we move through the 2D perlin surface 
@@ -48,34 +28,32 @@ function draw() {
     // refering to the smoothness between vertices on a single draw()
     let angleStepSize = 0.01; 
     beginShape();
-    for (let a = 0; a < TWO_PI; a += angleStepSize) {
-        let xOff = map(cos(a), -1, 1, 0, noiseMax);
-        let yOff = map(sin(a), -1, 1, 0, noiseMax);
-        // pick radius for each point in interval (50, 100)
-        // using perlin noise
-        // perlin noise takes in a time step and returns a value between 0 and 1
-        // so we map it to the range 100 to 200
-        // it uses the time step t to keep the noise "smooth"
-        let r = map(noise(xOff, yOff, zOff), 0, 1, 200, 300);
-        // x, y coords of point rel to center
-        let x = r * cos(a);
-        let y = r * sin(a);
+    for (let theta = 0; theta < TWO_PI; theta += angleStepSize) {
+        // convert the angle to an (x, y) coord on the region [-1, 1] x [-1, 1]
+        let xu = cos(theta);
+        let yu = sin(theta);
+        // the noise function doesn't take negative values so we map the region
+        // [-1, 1] x [-1, 1] to the region [0, noiseMax] x [0, noiseMax]
+        // note: the larger noiseMax is the more potential for variation in the r's there will be
+        let xPerlin = map(xu, -1, 1, 0, noiseMax);
+        let yPerlin = map(yu, -1, 1, 0, noiseMax);
+        // pick the radius of the current point using the perlin x, y calculated above
+        // note: we introduce the perlin-z as well in order to animate. because noise(x, y) is
+        // constant for any given x and y, we have to add a z coordinate that moves us through time
+        let r = map(noise(xPerlin, yPerlin, zPerlin), 0, 1, 200, 300);
         
-        // history.push(createVector(x, y));
+        // convert (theta, r) polar to (x, y) cartesian coords 
+        let x = r * xu;
+        let y = r * yu;
         curveVertex(x, y);
-        // if (history.length > 3 * (TWO_PI / angleStepSize)) history.splice(0, 1)
     }
     endShape(CLOSE);
     
-    // beginShape();
-    // for (let i = 0; i < history.length; i++) {
-    //     curveVertex(history[i].x, history[i].y)
-    // }
-    // endShape(CLOSE);
-
-    t += 0.01; // color time step
-    zOff += 0.1; // speed moving through the animation
-    numLoops += 1;
-
-    // if (numLoops > 10) noLoop();
+    zPerlin += 0.1; // speed moving through the animation
 }
+
+window.addEventListener("wheel", (e) => {
+    if(e.wheelDelta < 0 && scrollCount < 100) scrollCount += 1;
+    else if(e.wheelDelta>0 && scrollCount > 0) scrollCount -= 1;
+	document.querySelector('.number').innerHTML = scrollCount;
+});

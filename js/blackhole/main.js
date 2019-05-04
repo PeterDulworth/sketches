@@ -32,7 +32,6 @@ function setup() {
     checkbox.parent('chk')
 }
 
-
 function checkToggled() {
     loop = this.checked();
 }
@@ -54,7 +53,7 @@ function draw() {
     // first overlay the entire background with transparency to create blur effect
     background(7, 7, 7, 20)
     
-    // then draw the particles
+    // then draw the particles (note: iterate backwards because we might delete things)
     for (let i = particles.length - 1; i >= 0; i--) {
         let p = particles[i];
         // change the photons velocity to pull it towards the black hole
@@ -79,8 +78,6 @@ function draw() {
 
     // if the loop box is checked, created new photons every 10 seconds
     if (loop && frameCount % 300 == 0) initialPhotons();
-
-    console.log(particles.length)
 }
 
 /*****************
