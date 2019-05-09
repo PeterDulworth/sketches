@@ -8,22 +8,32 @@ class DNA {
             this.genes = [];
             for (let i = 0; i < lifespan; i++) {
                 this.genes[i] = p5.Vector.random2D();
-                this.genes[i].setMag(0.1);
+                this.genes[i].setMag(maxForce);
             }
         }
     }
 
+    // create a new DNA by combining this DNA with the input partner DNA
     crossOver(partnerGenes) {
         let newGenes = [];
-        let midPoint = floor(random(genes.length)); // pick random midpoint
+        let midPoint = floor(random(this.genes.length)); // pick random midpoint
         for (let i = 0; i < this.genes.length; i++) {
             if (i > midPoint) {
                 newGenes[i] = this.genes[i];
             } else {
-                newGenes[i] = this.partnerGenes[i];
+                newGenes[i] = partnerGenes.genes[i];
             }
         }
 
         return new DNA(newGenes);
+    }
+
+    mutation() {
+        for (let i = 0; i < this.genes.length; i++) {
+            if(random(1) < 0.01) {
+                this.genes[i] = p5.Vector.random2D();
+                this.genes[i].setMag(maxForce);
+            }
+        }
     }
 }
