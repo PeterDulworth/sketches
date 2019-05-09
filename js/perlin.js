@@ -21,12 +21,7 @@ function draw() {
     // noiseSeed(99); // start with the same shape everytime
     
     let noiseMax = map(scrollCount, 0, 100, 2, 20);
-    // dictates the number of vertices 
-    // note: this also dictates how fast we move through the 2D perlin surface 
-    // the larger the step size through the surface, the less smooth the noise
-    // note 2: the angle gets reset for each draw() so in the first note i am 
-    // refering to the smoothness between vertices on a single draw()
-    let angleStepSize = 0.01; 
+    let angleStepSize = 0.01; // num vertices = 2 * PI / angleStepSize
     beginShape();
     for (let theta = 0; theta < TWO_PI; theta += angleStepSize) {
         // convert the angle to an (x, y) coord on the region [-1, 1] x [-1, 1]
@@ -39,7 +34,8 @@ function draw() {
         let yPerlin = map(yu, -1, 1, 0, noiseMax);
         // pick the radius of the current point using the perlin x, y calculated above
         // note: we introduce the perlin-z as well in order to animate. because noise(x, y) is
-        // constant for any given x and y, we have to add a z coordinate that moves us through time
+        // constant for any given x and y, (and theta ranges from [0, 2 * PI] each time which determines x, y)
+        // we have to add a z coordinate that moves us through time
         let r = map(noise(xPerlin, yPerlin, zPerlin), 0, 1, 200, 300);
         
         // convert (theta, r) polar to (x, y) cartesian coords 
