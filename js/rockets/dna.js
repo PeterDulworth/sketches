@@ -28,9 +28,10 @@ class DNA {
         return new DNA(newGenes);
     }
 
+    // randomly mutate any given entry in the gene with a certain probability (the mutation rate)
     mutation() {
         for (let i = 0; i < this.genes.length; i++) {
-            if(random(1) < 0.01) {
+            if(random(1) < mutationRate) {
                 this.genes[i] = p5.Vector.random2D();
                 this.genes[i].setMag(maxForce);
             }

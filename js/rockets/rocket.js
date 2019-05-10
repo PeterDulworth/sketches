@@ -1,38 +1,52 @@
 class Rocket {
     constructor(dna) {
-        // start the rocket in the middle
+        // initial location of the rocket
         this.pos = createVector(width / 2, height);
         // no initial vel / acc
         this.vel = createVector();
         this.acc = createVector();
-        // essentially array of velocities
-        if (dna) {
-            this.dna = dna;
-        } else {
-            this.dna = new DNA();
-        }
         this.fitness = 0;
         this.targetReached = false;
+        this.frameTargetReached;
         this.collision = false;
+
+        // essentially array of velocities
+        if (dna) this.dna = dna;
+        else this.dna = new DNA();
     }
 
     applyForce(force) {
         this.acc.add(force)
     }
 
-    // the time to target could factor into the fitness
-    // lower the count, -> higher fitness
+    // calculate fitness roughly following these rules:
+    // 1. lower distance to target -> higher fitness
+    // 2. lower frame count -> higher fitness
+    // 3. actually hit the target -> fitness boost
+    // 4. left frame or hit obstacle -> fitness lowered
     calcFitness() {
-        let d = dist(this.pos.x, this.pos.y, target.x, target.y);
+        // find the distance from the rocket to the target
+        let d = dist(this.pos.x, this.pos.y, targetPos.x, targetPos.y);
+        // normally 0 would be the best distance and width the worst. flip it
         this.fitness = map(d, 0, width, width, 0);
+        this.fitness = pow(this.fitness, 2);
+
+        // if the target is reached give a big reward
         if (this.targetReached) {
-            this.fitness *= 10;
+            this.fitness *= 10; // 10x more likely to show up in the mating pool
         }
 
         // divide fitness by 10 if crashed (because crashing closer to target is still better than crashing farther)
         if (this.collision) {
             this.fitness /= 10;
         }
+
+        // reward reaching the target sooner
+        if (this.targetReached) {
+            this.fitness = map(this.frameTargetReached, 0, lifespan, 10, 1) * this.fitness;
+        }
+
+        // this.fitness = pow(e, this.fitness);
     }
 
     // check if the rocket has collided with any obstacle
@@ -53,19 +67,17 @@ class Rocket {
         }
     }
 
-    // arrow functions??
-    update() {
-        
+    update(frame) {
         // if the rocket has reached the target
-        let d = dist(this.pos.x, this.pos.y, target.x, target.y);
+        let d = dist(this.pos.x, this.pos.y, targetPos.x, targetPos.y);
         if (d < 10) {
             this.targetReached = true;
-            this.pos = target.copy();
+            if (!this.frameTargetReached) this.frameTargetReached = frame;
         } 
 
         this.checkCollisions();
-        
-        this.applyForce(this.dna.genes[count]);
+
+        this.applyForce(this.dna.genes[frame]);
         if (!this.targetReached && !this.collision) {
             this.vel.add(this.acc);
             this.pos.add(this.vel);
@@ -77,10 +89,50 @@ class Rocket {
     show() {
         push(); // wrapping in push / pop keeps rotating and translating from affecting other things
         translate(this.pos.x, this.pos.y);
-        fill(255, 150);
         rotate(this.vel.heading());
-        rectMode(CENTER);
-        rect(0, 0, 25, 5);
+        scale(0.3);
+
+        if (!this.collision && !this.targetReached) {
+            fill(255, 200);
+            this.drawRocketBody();
+            this.drawRocketFlame();
+        } else if (this.collision) {
+            fill(255, 0, 0, 200);
+            this.drawRocketBody();
+        } else if (this.targetReached) {
+            fill(0, 255, 0, 200);
+            this.drawRocketBody();
+        }
+
         pop();
+    }
+
+    // vertices of the rocket body
+    drawRocketBody() {
+        beginShape();
+        vertex(15, 10)
+        vertex(0, 10)
+        vertex(-15, 10)
+        vertex(-26, 10)
+        vertex(-40, 18)
+        
+        vertex(-40, 0)
+        
+        vertex(-40, -18)
+        vertex(-26, -10)
+        vertex(-15, -10)
+        vertex(0, -10)
+        vertex(15, -10)
+        
+        vertex(30, 0)
+        endShape(CLOSE);
+    }
+
+    // the flame behind the rocket
+    drawRocketFlame() {
+        stroke('red')
+        line(-50, 0, -100, 0)
+        line(-50, 4, -70, 4)
+        line(-50, -4, -85, -4)
     }
 }
