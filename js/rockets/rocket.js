@@ -7,8 +7,10 @@ class Rocket {
         this.acc = createVector();
         this.fitness = 0;
         this.targetReached = false;
-        this.frameTargetReached;
+        this.finishFrame = 0;
         this.collision = false;
+        this.recordDist = Infinity; // closest rocket gets to target in a given generation
+        this.prob = 0;
 
         // essentially array of velocities
         if (dna) this.dna = dna;
@@ -25,28 +27,13 @@ class Rocket {
     // 3. actually hit the target -> fitness boost
     // 4. left frame or hit obstacle -> fitness lowered
     calcFitness() {
-        // find the distance from the rocket to the target
-        let d = dist(this.pos.x, this.pos.y, targetPos.x, targetPos.y);
-        // normally 0 would be the best distance and width the worst. flip it
-        this.fitness = map(d, 0, width, width, 0);
-        this.fitness = pow(this.fitness, 2);
+        this.fitness = pow(1.0 / (this.recordDist * this.finishFrame), 4);
 
-        // if the target is reached give a big reward
-        if (this.targetReached) {
-            this.fitness *= 10; // 10x more likely to show up in the mating pool
-        }
+        // gain fitness for reaching target
+        if (this.targetReached) this.fitness *= 10; // 10x more likely to show up in the mating pool
 
-        // divide fitness by 10 if crashed (because crashing closer to target is still better than crashing farther)
-        if (this.collision) {
-            this.fitness /= 10;
-        }
-
-        // reward reaching the target sooner
-        if (this.targetReached) {
-            this.fitness = map(this.frameTargetReached, 0, lifespan, 10, 1) * this.fitness;
-        }
-
-        // this.fitness = pow(e, this.fitness);
+        // lose fitness for hitting obstacle
+        if (this.collision) this.fitness /= 10;
     }
 
     // check if the rocket has collided with any obstacle
@@ -68,21 +55,21 @@ class Rocket {
     }
 
     update(frame) {
-        // if the rocket has reached the target
+        // distance between rocket and target
         let d = dist(this.pos.x, this.pos.y, targetPos.x, targetPos.y);
-        if (d < 10) {
-            this.targetReached = true;
-            if (!this.frameTargetReached) this.frameTargetReached = frame;
-        } 
+        if (d < this.recordDist) this.recordDist = d;
+        
+        // if target reached
+        if (d < targetSize / 2 && !this.targetReached) this.targetReached = true;
+        else this.finishFrame++;
 
         this.checkCollisions();
 
-        this.applyForce(this.dna.genes[frame]);
         if (!this.targetReached && !this.collision) {
+            this.applyForce(this.dna.genes[frame]);
             this.vel.add(this.acc);
             this.pos.add(this.vel);
             this.acc.mult(0);
-            this.vel.limit(4);
         }
     }
 

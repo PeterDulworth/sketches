@@ -3,8 +3,6 @@ class Population {
     constructor(size) {
         this.rockets = [];
         this.popSize = size;
-        this.matingPool = [];
-        // the current generation 0, 1, 2, ...
         this.generation = 0;
         this.frame = 0;
 
@@ -14,7 +12,7 @@ class Population {
     }
 
     // construct the mating pool based on the fitness of each rocket
-    buildPool() {
+    computeProbs() {
         // calculate fitness and find the max and total of all rockets
         let maxFit = 0;
         let totalFit = 0;
@@ -39,20 +37,25 @@ class Population {
         // }
 
         // (2) normalize as a percentage
+        let s = 0;
         for(let i = 0; i < this.popSize; i++) { 
-            this.rockets[i].fitness /= totalFit; 
+            this.rockets[i].prob = this.rockets[i].fitness / totalFit; 
+            s += this.rockets[i].prob;
+            console.log(this.rockets[i].prob)
         }
+        console.log("total ", s)
+    }
 
-        // create the mating pool
-        // a rocket with fitness value 1.0 should be in the fitness pool 100 times
-        // a rocket with fitness value 0.3 should be in the fitness pool 30 times
-        this.matingPool = [];
-        for(let i = 0; i < this.popSize; i++) { 
-            let n = this.rockets[i].fitness * 100;
-            for (var j = 0; j < n; j++) {
-                this.matingPool.push(i);
-            }
+    // https://www.youtube.com/watch?v=ETphJASzYes&list=PLRqwX-V7Uu6bJM3VgzjNV5YxVxUwzALHV&index=8
+    pickRocket() {
+        let i = 0;
+        let r = random(1);
+        while(r > 0) {
+            r = r - this.rockets[i].prob;
+            i++;
         }
+        i--;
+        return this.rockets[i];
     }
 
     // generate the new population
@@ -61,8 +64,8 @@ class Population {
         let newRockets = [];
         for (let i = 0; i < this.rockets.length; i++) {
             // get the DNA of two random rockets from the mating pool (rockets with higher fitness will be more likely)
-            let parentADNA = this.rockets[random(this.matingPool)].dna;
-            let parentBDNA = this.rockets[random(this.matingPool)].dna;
+            let parentADNA = this.pickRocket().dna;
+            let parentBDNA = this.pickRocket().dna;
 
             // create a child from the DNA of the two random parents
             let childDNA = parentADNA.crossOver(parentBDNA);    
@@ -84,7 +87,7 @@ class Population {
     // evaluate the fitness of each element of the population and build a mating pool.
     selection() {
         // construct the mating pool based on the fitness of each rocket
-        this.buildPool();
+        this.computeProbs();
 
         this.createNewGeneration();
     }

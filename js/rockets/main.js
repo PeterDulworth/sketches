@@ -3,7 +3,7 @@ let fr = 120;
 // the population
 let population;
 // the number of frames per generation
-let lifespan = 300;
+let lifespan = 400;
 // the <p> to display the current frame count
 let frameCountDisplay;
 // the <p> to display the current generation
