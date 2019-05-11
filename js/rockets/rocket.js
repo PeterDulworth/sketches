@@ -61,7 +61,7 @@ class Rocket {
         
         // if target reached
         if (d < targetSize / 2 && !this.targetReached) this.targetReached = true;
-        else this.finishFrame++;
+        else if (!this.targetReached) this.finishFrame++;
 
         this.checkCollisions();
 

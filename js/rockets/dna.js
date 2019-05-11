@@ -33,8 +33,9 @@ class DNA {
         for (let i = 0; i < this.genes.length; i++) {
             if(random(1) < mutationRate) {
                 this.genes[i] = p5.Vector.random2D();
-                this.genes[i].mult(random(0, maxForce));
-                if (i == 0) this.genes[i].normalize();
+                // this.genes[i].mult(random(0, maxForce));
+                // if (i == 0) 
+                this.genes[i].normalize();
             }
         }
     }
