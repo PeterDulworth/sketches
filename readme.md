@@ -2,7 +2,7 @@
 
 sketches made in p5js
 
-demo at [sketches.peterdulworth.com](http://sketches.peterdulworth.com/) or [peterdulworth.github.io/sketches](http://peterdulworth.github.io/sketches)
+demo at [sketches.peterdulworth.com](http://sketches.peterdulworth.com/) or [peterdulworth.github.io/sketches/](http://peterdulworth.github.io/sketches)
 
 link: [http://peterdulworth.com/sketches/index.html](http://peterdulworth.com/sketches/index.html)
 
